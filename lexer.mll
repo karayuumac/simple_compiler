@@ -8,6 +8,7 @@ let digit = ['0'-'9']
 let id = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9']*
 
 rule lexer = parse
+| "//"[' ' '\t' 'a'-'z' 'A'-'Z' '0'-'9']*'\n'  { lexer lexbuf } (* コメントの無視 *)
 | digit+ as num  { NUM (int_of_string num) }
 | "if"                    { IF }
 | "else"                  { ELSE }
