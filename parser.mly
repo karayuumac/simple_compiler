@@ -72,6 +72,7 @@ stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
      | RETURN expr SEMI    { CallProc ("return", [$2]) }
      | block { $1 }
      | SEMI { NilStmt }
+     | error { print_string "Find syntax error while parsing \n"; NilStmt }
      ;
 
 aargs_opt: /* empty */     { [] }
