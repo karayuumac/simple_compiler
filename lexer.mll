@@ -8,7 +8,7 @@ let digit = ['0'-'9']
 let id = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9']*
 
 rule lexer = parse
-| "//"[' ' '\t' 'a'-'z' 'A'-'Z' '0'-'9']*'\n'  { lexer lexbuf } (* コメントの無視 *)
+| "//"[' ' '\t' 'a'-'z' 'A'-'Z' '0'-'9']*  { lexer lexbuf } (* コメントの無視 *)
 | digit+ as num  { NUM (int_of_string num) }
 | "if"                    { IF }
 | "else"                  { ELSE }
@@ -41,6 +41,7 @@ rule lexer = parse
 | ')'                     { RP  }
 | ','                     { COMMA }
 | ';'                     { SEMI }
-| [' ' '\t' '\n']         { lexer lexbuf }(* eat up whitespace *) 
+| [' ' '\t']              { lexer lexbuf }(* eat up whitespace *) 
+| '\n'                    { Lexing.new_line lexbuf; lexer lexbuf }
 | eof                     { raise End_of_file }
 | _                       { raise No_such_symbol }

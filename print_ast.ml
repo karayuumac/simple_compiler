@@ -37,14 +37,16 @@ and ast_typ ast = match ast with
       | IntTyp -> "IntTyp"
       | VoidTyp -> "VoidTyp"
 
-let main () =
+let _  =
   (* The open of a file *)
   let cin = if Array.length Sys.argv > 1 then open_in Sys.argv.(1)
             else stdin in
                 let lexbuf = Lexing.from_channel cin in
   (* The start of the entire program *)
-                   print_string (ast_stmt (Parser.prog Lexer.lexer lexbuf)); 
-                   print_string "\n"
-
-let _ = try main () with 
-         Parsing.Parse_error -> print_string "syntax error\n"
+  try
+    print_string (ast_stmt (Parser.prog Lexer.lexer lexbuf));
+    print_string "\n";
+  with Parsing.Parse_error ->
+    let after_token = Lexing.lexeme lexbuf in
+    let current_pos = lexbuf.lex_curr_p.pos_lnum in
+        print_string ("syntax error in Line " ^ string_of_int current_pos ^ " (before \"" ^ after_token ^ "\")");
