@@ -1,0 +1,16 @@
+{
+	int a, b, c, d;
+  a = 10;
+  b = 3;
+
+  sprint ("10 mod 3 = ");
+  iprint (a % b);
+  sprint ("\n");
+
+  c = 2023;
+  d = 21;
+
+  sprint ("2023 mod 21 = ");
+  iprint (c % d);
+  sprint ("\n");
+}
