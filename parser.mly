@@ -12,7 +12,8 @@ open Ast
 %token PLUS MINUS TIMES DIV LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
-
+%nonassoc RP
+%nonassoc ELSE
 %nonassoc GT LT EQ NEQ GE LE
 %left PLUS MINUS         /* lowest precedence */
 %left TIMES DIV         /* medium precedence */
