@@ -4,3 +4,6 @@ parser.ml
 lexer.ml
 parser.mli
 print_ast
+simc
+a.out
+tmp.s

@@ -5,7 +5,7 @@
         sprint ("You must give 2 integers.\n");
         sprint ("First integer: ");
         scan  (a);
-        sprint ("Second integer: ")
+        sprint ("Second integer: ");
         scan (b);
         m = a; n = b;
         r = m - (m / n) * n;
