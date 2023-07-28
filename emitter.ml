@@ -211,6 +211,23 @@ and trans_exp ast nest env = match ast with
                   (* %のコード *)
                   | CallFunc ("%", [left; right]) ->
                                           trans_exp (CallFunc ("-", [left; CallFunc ("*", [CallFunc("/", [left; right]); right])])) nest env
+
+                  (* ^のコード *)
+                  | CallFunc ("^", [left; right]) ->
+                                          let l1 = incLabel() in 
+                                          let l2 = incLabel() in
+                                            trans_exp left nest env
+                                            ^ trans_exp right nest env
+                                            ^ "\tpopq %rbx\n" (* 掛け算する回数を一度レジスタ%rbxに待避 *)
+                                            ^ "\tmovq $1, %rax\n"
+                                            ^ sprintf "L%d:\n" l1 (* %rbxが0になるまでループする / ループここから *)
+                                            ^ "\tcmpq $0, %rbx\n"
+                                            ^ sprintf "\tje L%d\n" l2
+                                            ^ "\timulq (%rsp), %rax\n"
+                                            ^ "\tsubq $1, %rbx\n"
+                                            ^ sprintf "\tjmp L%d\n" l1 (* ループここまで *)
+                                            ^ sprintf "L%d:\n" l2 (* ループ終了で計算終了 *)
+                                            ^ "\tmovq %rax, (%rsp)\n"
                   (* 反転のコード *)
                   | CallFunc("!",  arg::_) -> 
                                              trans_exp arg nest env

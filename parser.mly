@@ -9,14 +9,14 @@ open Ast
 %token <int> NUM
 %token <string> STR ID
 %token INT IF WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES DIV PERCENT LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
+%token PLUS MINUS TIMES DIV POWER PERCENT LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
 %nonassoc RP
 %nonassoc ELSE
 %nonassoc GT LT EQ NEQ GE LE
 %left PLUS MINUS         /* lowest precedence */
-%left TIMES DIV PERCENT        /* medium precedence */
+%left TIMES DIV PERCENT POWER       /* medium precedence */
 %nonassoc UMINUS      /* highest precedence */
 
 
@@ -95,6 +95,7 @@ expr : NUM { IntExp $1  }
      | expr MINUS expr { CallFunc ("-", [$1; $3]) }
      | expr TIMES expr { CallFunc ("*", [$1; $3]) }
      | expr DIV expr { CallFunc ("/", [$1; $3]) }
+     | expr POWER expr { CallFunc ("^", [$1; $3]) }
      | expr PERCENT expr { CallFunc ("%", [$1; $3]) }
      | MINUS expr %prec UMINUS { CallFunc("!", [$2]) }
      | LP expr RP  { $2 }
