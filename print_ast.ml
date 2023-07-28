@@ -25,6 +25,7 @@ and ast_dec ast = match ast with
                 (ast_stmt b)
       | VarDec (t,s) -> sprintf "VarDec(%s,\"%s\")" (ast_typ t) s
       | TypeDec (s, t) -> sprintf "TypeDec (\"%s\",%s)" s (ast_typ t)
+      | VarDecWithExp (t, s, v) -> sprintf "VarDecWithExp(%s,\"%s\",%s)" (ast_typ t) s (ast_exp v)
 and ast_exp ast = match ast with
         VarExp v -> sprintf "VarExp(%s)" (ast_var v)
       | StrExp s -> sprintf "StrExp(%s)" s

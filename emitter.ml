@@ -51,14 +51,17 @@ let rec trans_dec ast nest tenv env = match ast with
                  ^ prologue              (* プロローグ *)
                  ^ code                  (* 本体コード *)
                  ^ epilogue              (* エピローグ *)
+                 ; []
    (* 変数宣言の処理 *)
- | VarDec (t,s) -> ()
+ | VarDec (t,s) -> []
    (* 型宣言の処理 *)
  | TypeDec (s,t) -> 
       let entry = tenv s in
-         match entry with
-             (NAME (_, ty_opt)) -> ty_opt := Some (create_ty t tenv)
-           | _ -> raise (Err s)
+         (match entry with
+             (NAME (_, ty_opt)) -> ty_opt := Some (create_ty t tenv); []
+           | _ -> raise (Err s))
+    (* 変数宣言 + 代入の処理 *)
+  | VarDecWithExp (t, s, exp) -> trans_dec (VarDec (t, s)) nest tenv env @ [Assign (Var s, exp)];
 (* 文の処理 *)
 and trans_stmt ast nest tenv env = 
                  type_stmt ast env;
@@ -121,12 +124,12 @@ and trans_stmt ast nest tenv env =
                   | Block (dl, sl) -> 
                        (* ブロック内宣言の処理 *)
                        let (tenv',env',addr') = type_decs dl nest tenv env in
-                             List.iter (fun d -> trans_dec d nest tenv' env') dl;
+                             let add_sl = List.flatten (List.map (fun d -> trans_dec d nest tenv' env') dl) in
                              (* フレームの拡張 *)
                              let ex_frame = sprintf "\tsubq $%d, %%rsp\n" ((-addr'+16)/16*16) in
                                   (* 本体（文列）のコード生成 *)
                                   let code = List.fold_left 
-                                       (fun code ast -> (code ^ trans_stmt ast nest tenv' env')) "" sl
+                                       (fun code ast -> (code ^ trans_stmt ast nest tenv' env')) "" (add_sl @ sl)
                                   (* 局所変数分のフレーム拡張の付加 *)
                                   in ex_frame ^ code
                   (* elseなしif文のコード *)
