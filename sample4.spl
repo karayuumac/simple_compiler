@@ -1,0 +1,10 @@
+{
+  int a = 2;
+
+  sprint ("a++ = ");
+  iprint (a++);
+  sprint ("\n");
+  sprint ("a = ");
+  iprint (a);
+  sprint ("\n");
+}

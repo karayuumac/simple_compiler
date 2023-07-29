@@ -225,7 +225,7 @@ and trans_exp ast nest env = match ast with
                                             ^ sprintf "\tje L%d\n" l2
                                             ^ "\timulq (%rsp), %rax\n"
                                             ^ "\tsubq $1, %rbx\n"
-                                            ^ sprintf "\tjmp L%d\n" l1 (* ループここまで *)
+                                            ^ sprintf "\tjmp L%d\n" l1 (* ルーここまで *)
                                             ^ sprintf "L%d:\n" l2 (* ループ終了で計算終了 *)
                                             ^ "\tmovq %rax, (%rsp)\n"
                   (* 反転のコード *)
@@ -237,6 +237,12 @@ and trans_exp ast nest env = match ast with
                                  trans_stmt (CallProc(s, el)) nest initTable env 
                                  (* 返戻値は%raxに入れて返す *)
                                ^ "\tpushq %rax\n"
+                  | IncreFunc v -> 
+                    trans_exp (CallFunc ("+", [VarExp v; IntExp 1])) nest env
+                    ^ trans_var v nest env
+                    ^ "\tmovq (%rax), %rbx\n" (* 演算子としては, 増加前の値を返さないといけないので, 増加前の値を一度レジスタ%rbxにコピーしておく *)
+                    ^ "\tpopq (%rax)\n"
+                    ^ "\tpushq %rbx\n"
                   | _ -> raise (Err "internal error")
 (* 関係演算の処理 *)
 and trans_cond ast nest env = match ast with

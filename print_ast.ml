@@ -32,6 +32,7 @@ and ast_exp ast = match ast with
       | IntExp i -> sprintf "IntExp(%d)" i
       | CallFunc (s, l) -> sprintf "CallFunc(\"%s\",[%s])" s
                                (List.fold_left (fun str x -> (semi str) ^ (ast_exp x)) "" l)
+      | IncreFunc v -> sprintf "IncreFunc(%s)" (ast_var v)
 and ast_typ ast = match ast with
         NameTyp s -> sprintf "NameTyp \"%s\"" s
       | ArrayTyp (size,t) -> sprintf "ArrayTyp (%d,%s)" size (ast_typ t)
