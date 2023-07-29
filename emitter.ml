@@ -70,6 +70,7 @@ and trans_stmt ast nest tenv env =
                      Assign (v, e) -> trans_exp e nest env
                                     ^ trans_var v nest env
                                     ^ "\tpopq (%rax)\n"
+                   | AddAssign (v, e) -> trans_stmt (Assign (v, CallFunc("+", [VarExp v; e]))) nest tenv env
                    (* iprintのコード *)
                    | CallProc ("iprint", [arg]) -> 
                            (trans_exp arg nest env

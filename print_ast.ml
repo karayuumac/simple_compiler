@@ -14,6 +14,7 @@ let rec  ast_stmt ast = match ast with
       | If (e,s1,Some s2) -> sprintf "If(%s,%s,Some %s)" (ast_exp e) (ast_stmt s1) (ast_stmt s2)
       | While (e,s) -> sprintf "While(%s,%s)" (ast_exp e) (ast_stmt s)
       | NilStmt -> "NilStmt"
+      | AddAssign (v, e) -> sprintf "AddAssign(%s,%s)" (ast_var v) (ast_exp e)
 and ast_var ast = match ast with 
         Var s -> sprintf "Var \"%s\"" s
       | IndexedVar (v, e) -> sprintf "IndexedVar (%s,%s)" (ast_var v) (ast_exp e)

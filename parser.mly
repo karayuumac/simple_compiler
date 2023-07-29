@@ -9,7 +9,7 @@ open Ast
 %token <int> NUM
 %token <string> STR ID
 %token INT IF WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW
-%token PLUS MINUS TIMES DIV POWER PERCENT INCR LB RB LS RS LP RP ASSIGN SEMI COMMA TYPE VOID
+%token PLUS MINUS TIMES DIV POWER PERCENT INCR LB RB LS RS LP RP ASSIGN PLUSEQUAL SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
 %nonassoc RP
@@ -61,6 +61,7 @@ stmts: stmts stmt  { $1@[$2] }
 
 stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
      | ID LS expr RS ASSIGN expr SEMI  { Assign (IndexedVar (Var $1, $3), $6) }
+     | ID PLUSEQUAL expr SEMI { AddAssign (Var $1, $3) }
      | IF LP cond RP stmt     { If ($3, $5, None) }
      | IF LP cond RP stmt ELSE stmt 
                               { If ($3, $5, Some $7) }
