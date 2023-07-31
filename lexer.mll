@@ -20,6 +20,7 @@ rule lexer = parse
 | "return"                { RETURN }
 | "type"                  { TYPE }
 | "void"                  { VOID }
+| "do"                    { DO }
 | "++"                    { INCR }
 | id as text              { ID text }
 | '\"'[^'\"']*'\"' as str { STR str }

@@ -155,6 +155,7 @@ and trans_stmt ast nest tenv env =
                                        ^ trans_stmt s nest tenv env
                                        ^ sprintf "\tjmp L%d\n" l2
                                        ^ sprintf "L%d:\n" l1
+                  | DoWhile (e, s) -> trans_stmt s nest tenv env ^ trans_stmt (While (e, s)) nest tenv env
                   (* 空文 *)
                   | NilStmt -> ""
 (* 参照アドレスの処理 *)

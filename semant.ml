@@ -100,6 +100,7 @@ and type_stmt ast env =
                check_int (type_exp e env)
           | If (e,_,_) -> type_cond e env
           | While (e,_) -> type_cond e env
+          | DoWhile (e, _) -> type_cond e env
           | NilStmt -> ()
 and type_var ast env =
        match ast with

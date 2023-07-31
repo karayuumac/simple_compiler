@@ -13,6 +13,7 @@ let rec  ast_stmt ast = match ast with
       | If (e,s,None) -> sprintf "If(%s,%s,None)" (ast_exp e) (ast_stmt s)
       | If (e,s1,Some s2) -> sprintf "If(%s,%s,Some %s)" (ast_exp e) (ast_stmt s1) (ast_stmt s2)
       | While (e,s) -> sprintf "While(%s,%s)" (ast_exp e) (ast_stmt s)
+      | DoWhile (e, s) -> sprintf "DoWhile(%s,%s)" (ast_exp e) (ast_stmt s)
       | NilStmt -> "NilStmt"
       | AddAssign (v, e) -> sprintf "AddAssign(%s,%s)" (ast_var v) (ast_exp e)
 and ast_var ast = match ast with 

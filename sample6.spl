@@ -1,0 +1,17 @@
+{
+  int num = 32;
+  int i = 1;
+
+  sprint ("数値");
+  iprint (num);
+  sprint ("の約数を求める\n");
+
+  do {
+    if (num % i == 0) {
+      sprint ("約数 = ");
+      iprint (i);
+      sprint ("\n");
+    }
+    i += 1;
+  } while (i <= num);
+}
