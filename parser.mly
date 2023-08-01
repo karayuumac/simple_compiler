@@ -8,7 +8,7 @@ open Ast
 /* File parser.mly */
 %token <int> NUM
 %token <string> STR ID
-%token INT IF WHILE SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW DO
+%token INT IF WHILE FOR SPRINT IPRINT SCAN EQ NEQ GT LT GE LE ELSE RETURN NEW DO TO
 %token PLUS MINUS TIMES DIV POWER PERCENT INCR LB RB LS RS LP RP ASSIGN PLUSEQUAL SEMI COMMA TYPE VOID
 %type <Ast.stmt> prog
 
@@ -67,6 +67,7 @@ stmt : ID ASSIGN expr SEMI    { Assign (Var $1, $3) }
                               { If ($3, $5, Some $7) }
      | DO stmt WHILE LP cond RP SEMI  { DoWhile ($5, $2) }
      | WHILE LP cond RP stmt  { While ($3, $5) }
+     | FOR LP ID ASSIGN expr TO expr RP stmt { For (Var $3, $5, $7, $9) }
      | SPRINT LP STR RP SEMI  { CallProc ("sprint", [StrExp $3]) }
      | IPRINT LP expr RP SEMI { CallProc ("iprint", [$3]) }
      | SCAN LP ID RP SEMI  { CallProc ("scan", [VarExp (Var $3)]) }

@@ -21,7 +21,9 @@ rule lexer = parse
 | "type"                  { TYPE }
 | "void"                  { VOID }
 | "do"                    { DO }
+| "for"                   { FOR }
 | "++"                    { INCR }
+| ".."                    { TO }
 | id as text              { ID text }
 | '\"'[^'\"']*'\"' as str { STR str }
 | '='                     { ASSIGN }

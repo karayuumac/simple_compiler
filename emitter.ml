@@ -156,6 +156,16 @@ and trans_stmt ast nest tenv env =
                                        ^ sprintf "\tjmp L%d\n" l2
                                        ^ sprintf "L%d:\n" l1
                   | DoWhile (e, s) -> trans_stmt s nest tenv env ^ trans_stmt (While (e, s)) nest tenv env
+                  | For (v, e1, e2, s) ->
+                    let (cond_code, l1) = trans_cond (CallFunc ("<=", [VarExp v; e2])) nest env in
+                      let l2 = incLabel () in
+                        trans_stmt (Assign (v, e1)) nest tenv env
+                        ^ sprintf "L%d:\n" l2
+                        ^ cond_code
+                        ^ trans_stmt s nest tenv env
+                        ^ trans_stmt (AddAssign (v, IntExp 1)) nest tenv env
+                        ^ sprintf "\tjmp L%d\n" l2
+                        ^ sprintf "L%d:\n" l1
                   (* 空文 *)
                   | NilStmt -> ""
 (* 参照アドレスの処理 *)
