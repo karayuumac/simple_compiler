@@ -53,13 +53,15 @@ let savedARG = 24 (* return address,  static link, old %rbp *)
 let rec type_dec ast (nest,addr) tenv env =
    match ast with
       (* 関数定義の処理 *)
-      FuncDec (s, l, rlt, Block (dl,_)) -> 
+      FuncDec (s, l, rlt, Block (dl,stmts)) -> 
          (* 関数名の記号表への登録 *)
          check_redecl ((List.map (fun (t,s) -> VarDec (t,s)) l) @ dl) [] [];
+         let result_ty = create_ty rlt tenv in
          let env' = update s (FunEntry 
                                  {formals= 
                                     List.map (fun (typ,_) -> create_ty typ tenv) l; 
-                                    result=create_ty rlt tenv; level=nest+1}) env in (tenv, env', addr)
+                                    result=result_ty; level=nest+1}) env 
+          in check_func_return stmts result_ty env'; (tenv, env', addr)
     (* 変数宣言の処理 *)
     | VarDec (t,s) -> (tenv, 
               update s (VarEntry {ty= create_ty t tenv; offset=addr-8; level=nest}) env, addr-8)
@@ -152,3 +154,11 @@ and type_cond ast env =
             CallFunc (_, [left; right]) -> 
                (check_int (type_exp left env); check_int(type_exp right env))
           | _ -> raise (Err "internal error")
+
+and check_func_return stmts ty env =
+     match stmts with
+     | [] -> 
+          if ty != UNIT then raise (Err "incorrect return type")
+     | (CallProc ("return", [arg])) :: _ ->
+          if (type_exp arg env) != ty then raise (TypeErr "incorrect return type.")
+     | _ :: rest -> check_func_return rest ty env

@@ -1,0 +1,8 @@
+{
+  void sample () {
+    sprint ("hoge\n");
+    return 1;
+  };
+
+  sample ();
+}
